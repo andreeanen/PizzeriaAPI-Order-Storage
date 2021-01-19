@@ -30,6 +30,8 @@ namespace Pizzeria_Storage_API
             services.AddDbContext<IngredientContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddCors();
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -48,6 +50,10 @@ namespace Pizzeria_Storage_API
             }
 
             app.UseRouting();
+
+            app.UseCors(options => options.AllowAnyOrigin()
+                                          .AllowAnyHeader()
+                                          .AllowAnyMethod());
 
             app.UseAuthorization();
 

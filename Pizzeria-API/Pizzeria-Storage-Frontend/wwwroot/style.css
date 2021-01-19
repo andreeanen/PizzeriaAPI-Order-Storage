@@ -1,0 +1,16 @@
+﻿.update-quantity-button {
+    background-color: #D3D3D3;
+    border: none;
+    color: black;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    border-radius: 5px;
+    transition: all 0.3s ease 0s;
+}
+
+.form-control{
+    width:30%;
+}

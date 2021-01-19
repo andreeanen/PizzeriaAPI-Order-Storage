@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizzeria Storage</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+        <div class="container h-100">
+        <h1>Pizzeria-Storage</h1>
+        <br />
+        <h2>Ingredients</h2>
+        <div class="table responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody id="ingredients-list"></tbody>
+            </table>
+        </div>
+        <button id="delivery-button" class="btn btn-info" onclick="massDelivery()">Mass delivery</button>
+        <!--<button id="show-form-button" onclick="showForm()" class="btn btn-primary">Update storage</button>
+        <br />
+        <form id="update-storage-form" style="display:none" onsubmit="updateStorage()">
+            <div class="form-group">
+                <label for="quantity">Ingredient Name:</label>
+                <input type="number" class="form-control" id="quantity" placeholder="Title" name="title" required>
+            </div>
+            <input type="hidden" readonly id="ingredient-id" name="ingredient-id" value="" />
+            <input id="update-storage-button" class="btn btn-success" type="submit" value="Save changes" />
+        </form>-->
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+
