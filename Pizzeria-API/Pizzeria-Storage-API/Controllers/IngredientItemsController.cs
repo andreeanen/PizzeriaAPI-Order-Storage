@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pizzeria_Storage_API.Data;
 using Pizzeria_Storage_API.Models;
+using Pizzeria_Storage_API.Services;
 
 namespace Pizzeria_Storage_API.Controllers
 {
@@ -30,7 +31,18 @@ namespace Pizzeria_Storage_API.Controllers
             return Ok(ingredients);
         }
 
+        [HttpPut("massdelivery")]
+        public IActionResult MassDelivery()
+        {
+            var ingredientsBeforeDelivery = _context.Ingredients.ToList();
+            var massDeliveryVisitor = new MassDeliveryVisitor();
+            var ingredientsAfterDelivery = massDeliveryVisitor.IncreaseQuantityOfIngredients(ingredientsBeforeDelivery);
 
+            _context.Ingredients.UpdateRange(ingredientsAfterDelivery);
+            _context.SaveChanges();
+
+            return Ok(ingredientsAfterDelivery);
+        }
 
         //// GET: api/IngredientItems/5
         //[HttpGet("{id}")]
@@ -47,7 +59,7 @@ namespace Pizzeria_Storage_API.Controllers
         //}
 
         //// PUT: api/IngredientItems/5
-        
+
         //[HttpPut("{id}")]
         //public async Task<IActionResult> PutIngredientItem(int id, IngredientItem ingredientItem)
         //{
@@ -78,7 +90,7 @@ namespace Pizzeria_Storage_API.Controllers
         //}
 
         //// POST: api/IngredientItems
-     
+
         //[HttpPost]
         //public async Task<ActionResult<IngredientItem>> PostIngredientItem(IngredientItem ingredientItem)
         //{
