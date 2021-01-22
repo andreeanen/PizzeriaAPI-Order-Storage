@@ -44,6 +44,28 @@ namespace Pizzeria_Storage_API.Controllers
             return Ok(ingredientsAfterDelivery);
         }
 
+        [HttpPut("{id}")]
+        public IActionResult UpdateIngredientQuantityById(int id, [FromBody] int quantity)
+        {
+            var ingredientToUpdate = _context.Ingredients.Where(i=>i.Id == id).FirstOrDefault();
+            if(ingredientToUpdate == null)
+            {
+                return NotFound("There is no ingredient with the specified id in the database.");
+            }
+
+            if(quantity<0)
+            {
+                return BadRequest("The value for quantity has to be a positive number.");
+            }
+
+            ingredientToUpdate.Quantity = quantity;
+            _context.Ingredients.Update(ingredientToUpdate);
+            _context.SaveChanges();
+
+            return Ok(ingredientToUpdate);
+        }
+
+
         //// GET: api/IngredientItems/5
         //[HttpGet("{id}")]
         //public async Task<ActionResult<IngredientItem>> GetIngredientItem(int id)

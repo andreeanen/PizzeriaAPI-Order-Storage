@@ -48,7 +48,7 @@ namespace PizzeriaTests
         }
 
         [TestMethod]
-        public void MassDelivery_WhenCalled_ReturnsOkObjectResultWithIncreasedQuantotyOfIngredients()
+        public void MassDelivery_WhenCalled_ReturnsOkObjectResultWithIncreasedQuantityOfIngredients()
         {
             var data = new List<IngredientItem>
             {
@@ -79,6 +79,106 @@ namespace PizzeriaTests
 
             Assert.IsInstanceOfType(actualResult, typeof(OkObjectResult));
             Assert.AreEqual(actualQuantityAfterDelivery, expectedQuantityAfterDelivery);
+        }
+
+        [TestMethod]
+        public void UpdateIngredientQuantityById_IdExistsAndQuantityAPositiveNumber_ReturnsOkObjectResultWithUpdateQuantityOfIngredients()
+        {
+            var data = new List<IngredientItem>
+            {
+                new IngredientItem
+                {
+                    Id=1,
+                    IngredientName= "Test ingredient",
+                    Price= 10,
+                    Quantity=5
+                }
+
+            }.AsQueryable();
+
+            var mockSet = new Mock<DbSet<IngredientItem>>();
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.Provider).Returns(data.Provider);
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.Expression).Returns(data.Expression);
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+
+            var mockContext = new Mock<IngredientContext>();
+            mockContext.Setup(c => c.Ingredients).Returns(mockSet.Object);
+
+            var service = new IngredientItemsController(mockContext.Object);
+            int mockId = 1;
+            int quantityUpdated = 15;
+            var actualResult = service.UpdateIngredientQuantityById(mockId, quantityUpdated) as OkObjectResult;
+            var ingredient = actualResult.Value as IngredientItem;
+            var actualQuantityAfterDelivery = ingredient.Quantity;
+            var expectedQuantityAfterDelivery = data.ToList().FirstOrDefault().Quantity;
+
+            Assert.IsInstanceOfType(actualResult, typeof(OkObjectResult));
+            Assert.AreEqual(actualQuantityAfterDelivery, expectedQuantityAfterDelivery);
+        }
+
+        [TestMethod]
+        public void UpdateIngredientQuantityById_IdDoesNotExist_ReturnsNotFoundObjectResult()
+        {
+            var data = new List<IngredientItem>
+            {
+                new IngredientItem
+                {
+                    Id=1,
+                    IngredientName= "Test ingredient",
+                    Price= 10,
+                    Quantity=5
+                }
+
+            }.AsQueryable();
+
+            var mockSet = new Mock<DbSet<IngredientItem>>();
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.Provider).Returns(data.Provider);
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.Expression).Returns(data.Expression);
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+
+            var mockContext = new Mock<IngredientContext>();
+            mockContext.Setup(c => c.Ingredients).Returns(mockSet.Object);
+
+            var service = new IngredientItemsController(mockContext.Object);
+            int mockIdDoesNotExist = 0;
+            int quantityUpdated = 15;
+            var actualResult = service.UpdateIngredientQuantityById(mockIdDoesNotExist, quantityUpdated) as NotFoundObjectResult;
+         
+            Assert.IsInstanceOfType(actualResult, typeof(NotFoundObjectResult));
+        }
+
+        [TestMethod]
+        public void UpdateIngredientQuantityById_IdExistsAndQuantityIsANegativeNumber_ReturnsBadRequest()
+        {
+            var data = new List<IngredientItem>
+            {
+                new IngredientItem
+                {
+                    Id=1,
+                    IngredientName= "Test ingredient",
+                    Price= 10,
+                    Quantity=5
+                }
+
+            }.AsQueryable();
+
+            var mockSet = new Mock<DbSet<IngredientItem>>();
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.Provider).Returns(data.Provider);
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.Expression).Returns(data.Expression);
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+
+            var mockContext = new Mock<IngredientContext>();
+            mockContext.Setup(c => c.Ingredients).Returns(mockSet.Object);
+
+            var service = new IngredientItemsController(mockContext.Object);
+            int mockId = 1;
+            int quantityUpdated = -15;
+            var actualResult = service.UpdateIngredientQuantityById(mockId, quantityUpdated) as BadRequestObjectResult;
+           
+            Assert.IsInstanceOfType(actualResult, typeof(BadRequestObjectResult));
         }
     }
 }
