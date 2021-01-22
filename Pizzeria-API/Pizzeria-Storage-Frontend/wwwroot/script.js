@@ -1,6 +1,6 @@
 ﻿
 function getIngredients() {
-    const endpoint = 'http://localhost:61064/api/ingredientitems/';
+    const endpoint = 'http://localhost:6002/api/ingredientitems/';
     fetch(endpoint)
         .then(function (response) {
             if (response.ok) {
@@ -67,7 +67,7 @@ function updateStorage(id,quantity) {
        quantity: quantity
     };
     const stringifiedBody = JSON.stringify(body);
-    let endpoint =`http://localhost:61064/api/ingredientitems/${id}/${quantity}`;
+    let endpoint =`http://localhost:6002/api/ingredientitems/${id}/${quantity}`;
 
     fetch(endpoint, {
         method: 'PUT',
@@ -81,7 +81,7 @@ function updateStorage(id,quantity) {
 }
 
 function massDelivery() {
-    const endpoint = 'http://localhost:61064/api/ingredientitems/massdelivery';
+    const endpoint = 'http://localhost:6002/api/ingredientitems/massdelivery';
     fetch(endpoint, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' }

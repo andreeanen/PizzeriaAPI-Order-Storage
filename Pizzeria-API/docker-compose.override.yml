@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  pizzeria-storage-api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+
+  pizzeria-storage-frontend:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+
