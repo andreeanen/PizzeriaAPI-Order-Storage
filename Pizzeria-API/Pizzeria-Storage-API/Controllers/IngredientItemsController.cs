@@ -44,9 +44,10 @@ namespace Pizzeria_Storage_API.Controllers
             return Ok(ingredientsAfterDelivery);
         }
 
-        [HttpPut("{id}")]
-        public IActionResult UpdateIngredientQuantityById(int id, [FromBody] int quantity)
+        [HttpPut("{id}/{quantity}")]
+        public IActionResult UpdateIngredientQuantityById(int id, int quantity)
         {
+          
             var ingredientToUpdate = _context.Ingredients.Where(i=>i.Id == id).FirstOrDefault();
             if(ingredientToUpdate == null)
             {

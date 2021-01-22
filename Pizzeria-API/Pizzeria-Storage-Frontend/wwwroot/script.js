@@ -47,7 +47,7 @@ function displayIngredients(data) {
  
         updateQuantityButton.addEventListener('click', function (e) {
             e.preventDefault();
-            const updatedQuantity = document.getElementById(`updated-quantity${ingredient.id}`).value;
+            const updatedQuantity = parseInt(document.getElementById(`updated-quantity${ingredient.id}`).value);
             updateStorage(ingredient.id, updatedQuantity);
         });
         quantityButton.appendChild(updateQuantityButton);
@@ -60,6 +60,24 @@ function displayIngredients(data) {
 function updateStorage(id,quantity) {
     console.log(id);
     console.log(quantity);
+    console.log(typeof id);
+    console.log(typeof quantity);
+    
+    const body = {
+       quantity: quantity
+    };
+    const stringifiedBody = JSON.stringify(body);
+    let endpoint =`http://localhost:61064/api/ingredientitems/${id}/${quantity}`;
+
+    fetch(endpoint, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' }
+       })
+        .then(response => { response.json; console.log(response.json); })
+        .then(data => console.info(data))
+        .catch(error => console.error(error));
+
+    location.reload();
 }
 
 function massDelivery() {
