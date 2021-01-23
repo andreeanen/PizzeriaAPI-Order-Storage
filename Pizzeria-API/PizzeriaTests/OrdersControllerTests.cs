@@ -377,11 +377,6 @@ namespace PizzeriaTests
             };
             yield return new object[]
             {
-                new Order() { Id = 1, Pizzas = new List<Product>() { new Margherita() } },
-                new OkObjectResult("")
-            };
-            yield return new object[]
-            {
                 new Order() { Id = 1, Status = Status.Delivered, Pizzas = new List<Product>() { new Margherita() } },
                 new BadRequestObjectResult("")
             };            

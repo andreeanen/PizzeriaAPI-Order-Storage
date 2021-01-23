@@ -18,6 +18,8 @@ namespace Pizzeria_API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
+            services.AddHttpClient();
             services.AddControllers();
         }
 
@@ -32,6 +34,10 @@ namespace Pizzeria_API
             //app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(options => options.AllowAnyOrigin()
+                                          .AllowAnyHeader()
+                                          .AllowAnyMethod());
 
             app.UseAuthorization();
 

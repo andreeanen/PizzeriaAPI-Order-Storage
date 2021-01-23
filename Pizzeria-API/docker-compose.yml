@@ -1,15 +1,26 @@
 version: '3.4'
 
 services:
+     
   pizzeria-storage-frontend:
     image: ${DOCKER_REGISTRY-}pizzeriastoragefrontend
     ports:
-       - "80:80"
+      - "80:80"
     depends_on:
-        - pizzeria-storage-api
+      - pizzeria-storage-api
     build:
       context: .
       dockerfile: Pizzeria-Storage-Frontend/Dockerfile
+
+  pizzeria-api:
+    image: ${DOCKER_REGISTRY-}pizzeriaapi
+    ports:
+      - "6001:80"
+    depends_on:
+      - pizzeria-storage-api
+    build:
+      context: .
+      dockerfile: Pizzeria-API/Dockerfile
 
   storagedb:
     image: "mcr.microsoft.com/mssql/server:2017-latest"
@@ -22,12 +33,15 @@ services:
   pizzeria-storage-api:
     image: ${DOCKER_REGISTRY-}pizzeriastorageapi
     ports:
-        - "6002:80"
+      - "6002:80"
     depends_on:
-        - storagedb
+      - storagedb
     build:
       context: .
       dockerfile: Pizzeria-Storage-API/Dockerfile
 
   
+
+
+
 

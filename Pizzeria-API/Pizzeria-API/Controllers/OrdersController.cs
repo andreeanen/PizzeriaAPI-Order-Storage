@@ -1,8 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Pizzeria_API.Data;
 using Pizzeria_API.Models;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 
 namespace Pizzeria_API.Controllers
 {
@@ -12,6 +18,8 @@ namespace Pizzeria_API.Controllers
     {
         public Orders Orders { get; set; }
         public Menu Menu { get; set; }
+
+        private readonly HttpClient client = new HttpClient();
 
         public OrdersController()
         {
@@ -86,12 +94,41 @@ namespace Pizzeria_API.Controllers
             }
             if (order.Status == Status.InProgress)
             {
-                order.Status = Status.Submitted;
-                var calculator = new OrderSumCalculator();
-                order.Total = calculator.CalculateOrderSum(order);
-                return Ok(order);
+                if (order.Ingredients.Count>0)
+                {
+                    var ingredients = GetListOfIngredientsForStorage(order);
+                    var json = JsonConvert.SerializeObject(ingredients);
+                    var data = new StringContent(json, Encoding.UTF8, "application/json");
+                    var url = "http://pizzeria-storage-api:80/api/ingredientitems/";
+                    var response =  client.PostAsync(url,data);
+                    var result = response.Result;
+                    if(result.IsSuccessStatusCode)
+                    {
+                        order.Status = Status.Submitted;
+                        var calculator = new OrderSumCalculator();
+                        order.Total = calculator.CalculateOrderSum(order);
+                        return Ok(order);
+                    }
+                }
             }
             return BadRequest($"It is not possible to change the status of a {order.Status.ToString().ToLower()} order to submitted.");
+        }
+
+        private List<IngredientStorage> GetListOfIngredientsForStorage(Order order)
+        {
+            List<IngredientStorage> ingredients = new List<IngredientStorage>();
+            var ingredientsGrouped = order.Ingredients.GroupBy(i => i.Name).ToList();
+            foreach (var groupOfIngredients in ingredientsGrouped)
+            {
+                var ingredientForStorage =new IngredientStorage
+                {
+                    IngredientName = groupOfIngredients.Key,
+                    Quantity = groupOfIngredients.Count()             
+                };
+                ingredients.Add(ingredientForStorage);
+            }
+
+            return ingredients;
         }
 
         [HttpPut("{id}/status={status}")]

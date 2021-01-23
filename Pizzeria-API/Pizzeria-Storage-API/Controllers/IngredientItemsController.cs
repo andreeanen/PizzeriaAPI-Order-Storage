@@ -66,6 +66,32 @@ namespace Pizzeria_Storage_API.Controllers
             return Ok(ingredientToUpdate);
         }
 
+        [HttpPost]
+        public IActionResult CheckAvailabilityInStorage([FromBody] List<IngredientOrder> ingredientsFromOrder)
+        {
+            List<IngredientItem> ingredientsInStorage = new List<IngredientItem>();
+            foreach (var ingredient in ingredientsFromOrder)
+            {
+                var ingredientFromStorage = _context.Ingredients.Where(i=>i.IngredientName == ingredient.IngredientName).FirstOrDefault();
+
+                if(ingredientFromStorage == null)
+                {
+                    return NotFound();
+                }
+
+                if(ingredientFromStorage.Quantity < ingredient.Quantity)
+                {
+                    return BadRequest($"The number of {ingredientFromStorage.IngredientName} that you are trying to order exceeds the quantity in the storage.");
+                }
+                               
+                ingredientFromStorage.Quantity -= ingredient.Quantity;
+                ingredientsInStorage.Add(ingredientFromStorage);
+                _context.Ingredients.Update(ingredientFromStorage);
+                _context.SaveChanges();
+            }
+
+            return Ok(ingredientsInStorage);
+        }
 
         //// GET: api/IngredientItems/5
         //[HttpGet("{id}")]

@@ -180,5 +180,122 @@ namespace PizzeriaTests
            
             Assert.IsInstanceOfType(actualResult, typeof(BadRequestObjectResult));
         }
+
+        [TestMethod]
+        public void CheckAvailabilityInStorage_WhenIngredientDoesNotExistInDatabase_ReturnsNotFound()
+        {
+            var data = new List<IngredientItem>
+            {
+                new IngredientItem
+                {
+                    IngredientName= "Ham",
+                    Price= 10,
+                    Quantity=5
+                }
+
+            }.AsQueryable();
+
+            var mockSet = new Mock<DbSet<IngredientItem>>();
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.Provider).Returns(data.Provider);
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.Expression).Returns(data.Expression);
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+
+            var mockContext = new Mock<IngredientContext>();
+            mockContext.Setup(c => c.Ingredients).Returns(mockSet.Object);
+
+            List<IngredientOrder> ingredientsFromOrder = new List<IngredientOrder>()
+            {
+                new IngredientOrder
+                {
+                    IngredientName="Ingredient Does Not Exist In Database"
+                }
+            };
+
+
+            var service = new IngredientItemsController(mockContext.Object);
+            var actualResult = service.CheckAvailabilityInStorage(ingredientsFromOrder) as NotFoundResult;
+
+            Assert.IsInstanceOfType(actualResult, typeof(NotFoundResult));
+        }
+
+        [TestMethod]
+        public void CheckAvailabilityInStorage_WhenIngredientQuantityFromOrderIsHigherThenInStorage_ReturnsBadRequest()
+        {
+            var data = new List<IngredientItem>
+            {
+                new IngredientItem
+                {
+                    IngredientName= "Ham",
+                    Price= 10,
+                    Quantity=5
+                }
+
+            }.AsQueryable();
+
+            var mockSet = new Mock<DbSet<IngredientItem>>();
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.Provider).Returns(data.Provider);
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.Expression).Returns(data.Expression);
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+
+            var mockContext = new Mock<IngredientContext>();
+            mockContext.Setup(c => c.Ingredients).Returns(mockSet.Object);
+
+            List<IngredientOrder> ingredientsFromOrder = new List<IngredientOrder>()
+            {
+                new IngredientOrder
+                {
+                    IngredientName="Ham",
+                    Quantity = 6
+                }
+            };
+
+
+            var service = new IngredientItemsController(mockContext.Object);
+            var actualResult = service.CheckAvailabilityInStorage(ingredientsFromOrder) as BadRequestObjectResult;
+
+            Assert.IsInstanceOfType(actualResult, typeof(BadRequestObjectResult));
+        }
+
+        [TestMethod]
+        public void CheckAvailabilityInStorage_WhenIngredientQuantityFromOrderIsLowerThenInStorage_OkObjectResult()
+        {
+            var data = new List<IngredientItem>
+            {
+                new IngredientItem
+                {
+                    IngredientName= "Ham",
+                    Price= 10,
+                    Quantity=5
+                }
+
+            }.AsQueryable();
+
+            var mockSet = new Mock<DbSet<IngredientItem>>();
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.Provider).Returns(data.Provider);
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.Expression).Returns(data.Expression);
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+
+            var mockContext = new Mock<IngredientContext>();
+            mockContext.Setup(c => c.Ingredients).Returns(mockSet.Object);
+
+            List<IngredientOrder> ingredientsFromOrder = new List<IngredientOrder>()
+            {
+                new IngredientOrder
+                {
+                    IngredientName="Ham",
+                    Quantity = 2
+                }
+            };
+
+            var service = new IngredientItemsController(mockContext.Object);
+            var actualResult = service.CheckAvailabilityInStorage(ingredientsFromOrder) as OkObjectResult;
+            var ingredients = actualResult.Value as List<IngredientItem>;
+         
+            Assert.IsInstanceOfType(actualResult, typeof(OkObjectResult));
+            CollectionAssert.AreEqual(ingredients, data.ToList());
+        }
     }
 }
