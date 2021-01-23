@@ -425,5 +425,41 @@ namespace PizzeriaTests
                 new BadRequestObjectResult("")
             };
         }
+
+        [TestMethod]
+        public void GetListOfIngredientsForStorage_WhenCalled_ReturnsListOfIngredientStorageObjects()
+        {
+            var mockOrder = new Order()
+            {
+                Pizzas = new List<Product>() { new Margherita() },
+                Sodas = new List<Soda>() { new Fanta() },
+                Ingredients = new List<Ingredient>() { new Shrimps(), new Ham(), new Shrimps() },
+                Status = Status.InProgress
+            };
+            Orders = Orders.GetOrders();
+            Orders.Queue.Add(mockOrder);
+
+            var controller = new OrdersController();
+            var actualList = controller.GetListOfIngredientsForStorage(mockOrder);
+            var expectedList = new List<IngredientStorage>()
+            {
+                new IngredientStorage()
+                {
+                    IngredientName="Shrimps",
+                    Quantity=2
+                },
+                new IngredientStorage()
+                {
+                    IngredientName="Ham",
+                    Quantity=1
+                }
+            };
+
+            Assert.AreEqual(actualList[0].IngredientName, expectedList[0].IngredientName);
+            Assert.AreEqual(actualList[1].IngredientName, expectedList[1].IngredientName);
+            Assert.AreEqual(actualList[0].Quantity, expectedList[0].Quantity);
+            Assert.AreEqual(actualList[1].Quantity, expectedList[1].Quantity);
+
+        }
     }
 }

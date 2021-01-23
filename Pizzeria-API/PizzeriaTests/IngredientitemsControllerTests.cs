@@ -259,7 +259,7 @@ namespace PizzeriaTests
         }
 
         [TestMethod]
-        public void CheckAvailabilityInStorage_WhenIngredientQuantityFromOrderIsLowerThenInStorage_OkObjectResult()
+        public void CheckAvailabilityInStorage_WhenIngredientQuantityFromOrderIsLowerThenInStorage_ReturnsOkObjectResult()
         {
             var data = new List<IngredientItem>
             {
@@ -296,6 +296,67 @@ namespace PizzeriaTests
          
             Assert.IsInstanceOfType(actualResult, typeof(OkObjectResult));
             CollectionAssert.AreEqual(ingredients, data.ToList());
+        }
+
+        [TestMethod]
+        public void GetIngredienQuantityByName_WhenIngredientNameDoesNotExist_ReturnsZero()
+        {
+            var data = new List<IngredientItem>
+            {
+                new IngredientItem
+                {
+                    IngredientName= "Ham",
+                    Price= 10,
+                    Quantity=5
+                }
+
+            }.AsQueryable();
+
+            var mockSet = new Mock<DbSet<IngredientItem>>();
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.Provider).Returns(data.Provider);
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.Expression).Returns(data.Expression);
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+
+            var mockContext = new Mock<IngredientContext>();
+            mockContext.Setup(c => c.Ingredients).Returns(mockSet.Object);
+            string ingredientName = "Ingredient does not exist in the database";       
+
+            var service = new IngredientItemsController(mockContext.Object);
+            var actualResult = service.GetIngredienQuantityByName(ingredientName);
+
+            Assert.AreEqual(actualResult, 0);
+        }
+
+
+        [TestMethod]
+        public void GetIngredienQuantityByName_WhenIngredientNameExists_ReturnsQuantity()
+        {
+            var data = new List<IngredientItem>
+            {
+                new IngredientItem
+                {
+                    IngredientName= "Ham",
+                    Price= 10,
+                    Quantity=5
+                }
+
+            }.AsQueryable();
+
+            var mockSet = new Mock<DbSet<IngredientItem>>();
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.Provider).Returns(data.Provider);
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.Expression).Returns(data.Expression);
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            mockSet.As<IQueryable<IngredientItem>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+
+            var mockContext = new Mock<IngredientContext>();
+            mockContext.Setup(c => c.Ingredients).Returns(mockSet.Object);
+            string ingredientName = "ham";
+
+            var service = new IngredientItemsController(mockContext.Object);
+            var actualResult = service.GetIngredienQuantityByName(ingredientName);
+
+            Assert.AreEqual(actualResult, 5);
         }
     }
 }

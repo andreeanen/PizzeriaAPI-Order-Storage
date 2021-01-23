@@ -22,13 +22,26 @@ namespace Pizzeria_Storage_API.Controllers
             _context = context;
         }
 
-        // GET: api/IngredientItems
         [HttpGet]
         public  IActionResult GetIngredients()
         {
             var ingredients =  _context.Ingredients.ToList();
 
             return Ok(ingredients);
+        }
+
+        [HttpGet("{ingredientName}")]
+        public int GetIngredienQuantityByName(string ingredientName)
+        {
+            var ingredient = _context.Ingredients.Where(i => i.IngredientName.ToLower() == ingredientName.ToLower()).FirstOrDefault();
+
+            if (ingredient == null)
+            {
+                return 0;
+            }
+            int ingredientQuantity = ingredient.Quantity;
+
+            return ingredientQuantity;
         }
 
         [HttpPut("massdelivery")]

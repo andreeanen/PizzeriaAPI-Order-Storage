@@ -27,9 +27,7 @@ function displayIngredients(data) {
         name.innerHTML = `${ingredient.ingredientName}`;
         let price = row.insertCell(1);
         price.innerHTML = `${ingredient.price}`;
-        //let quantity = row.insertCell(2);
-        //quantity.innerHTML = `${ingredient.quantity}`;
-
+    
         let inputCell = row.insertCell(2);
         let inputField = document.createElement('input');
         inputField.value = ingredient.quantity;
@@ -44,6 +42,7 @@ function displayIngredients(data) {
         updateQuantityButton.className = 'update-quantity-button';
         updateQuantityButton.innerHTML = 'Update quantity';
         updateQuantityButton.type = 'submit';
+        updateQuantityButton.id = `updated-quantity-button${ingredient.id}`;
  
         updateQuantityButton.addEventListener('click', function (e) {
             e.preventDefault();
@@ -58,15 +57,15 @@ function displayIngredients(data) {
 }
 
 function updateStorage(id,quantity) {
-    console.log(id);
-    console.log(quantity);
-    console.log(typeof id);
-    console.log(typeof quantity);
+    //console.log(id);
+    //console.log(quantity);
+    //console.log(typeof id);
+    //console.log(typeof quantity);
     
-    const body = {
-       quantity: quantity
-    };
-    const stringifiedBody = JSON.stringify(body);
+    //const body = {
+    //   quantity: quantity
+    //};
+    //const stringifiedBody = JSON.stringify(body);
     let endpoint =`http://localhost:6002/api/ingredientitems/${id}/${quantity}`;
 
     fetch(endpoint, {

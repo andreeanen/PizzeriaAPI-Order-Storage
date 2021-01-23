@@ -59,14 +59,15 @@ namespace Pizzeria_API.Controllers
             return BadRequest($"Invalid status: {status}");
         }
 
-        [HttpPost]
-        public IActionResult CreateOrder([FromBody] string productName)
+        [HttpPost("{productName}")]
+        public IActionResult CreateOrder(string productName)
         {
             return CreateOrUpdateOrder(productName);
+
         }
 
-        [HttpPut("{id}")]
-        public IActionResult UpdateOrder(int id, [FromQuery] string action, [FromBody] string productName)
+        [HttpPut("{id}/{action}={productName}")]
+        public IActionResult UpdateOrder(int id, string action, string productName)
         {
             switch (action)
             {
@@ -114,7 +115,7 @@ namespace Pizzeria_API.Controllers
             return BadRequest($"It is not possible to change the status of a {order.Status.ToString().ToLower()} order to submitted.");
         }
 
-        private List<IngredientStorage> GetListOfIngredientsForStorage(Order order)
+        public List<IngredientStorage> GetListOfIngredientsForStorage(Order order)
         {
             List<IngredientStorage> ingredients = new List<IngredientStorage>();
             var ingredientsGrouped = order.Ingredients.GroupBy(i => i.Name).ToList();

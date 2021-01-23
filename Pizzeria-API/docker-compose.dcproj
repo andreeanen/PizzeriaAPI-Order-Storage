@@ -14,5 +14,11 @@
     </None>
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
+    <None Include="e2etests\cypress.json" />
+    <None Include="e2etests\cypress\fixtures\example.json" />
+    <None Include="e2etests\cypress\integration\pizzeriatests.spec.js" />
+    <None Include="e2etests\cypress\plugins\index.js" />
+    <None Include="e2etests\cypress\support\commands.js" />
+    <None Include="e2etests\cypress\support\index.js" />
   </ItemGroup>
 </Project>
