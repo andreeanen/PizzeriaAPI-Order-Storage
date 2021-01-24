@@ -461,5 +461,33 @@ namespace PizzeriaTests
             Assert.AreEqual(actualList[1].Quantity, expectedList[1].Quantity);
 
         }
+
+        [TestMethod]
+        public void DeleteOrderById_IdExists_ReturnsNoContent()
+        {
+            var controller = new OrdersController();
+
+            var mockOrder = new Order();
+            var mockOrderId = mockOrder.Id;
+            Orders = Orders.GetOrders();
+            Orders.Queue.Add(mockOrder);
+
+            var objectResult = controller.DeleteOrderById(mockOrderId) as NoContentResult;
+            var actualStatusCode = objectResult.StatusCode;
+
+            Assert.AreEqual(204, actualStatusCode);
+        }
+
+        [TestMethod]
+        public void DeleteOrderById_IdDoesNotExist_ReturnsNotFound()
+        {
+            var controller = new OrdersController();
+
+
+            var objectResult = controller.DeleteOrderById(0) as NotFoundResult;
+            var actualStatusCode = objectResult.StatusCode;
+
+            Assert.AreEqual(404, actualStatusCode);
+        }
     }
 }

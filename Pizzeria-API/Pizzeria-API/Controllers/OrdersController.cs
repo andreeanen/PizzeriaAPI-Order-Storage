@@ -156,6 +156,20 @@ namespace Pizzeria_API.Controllers
             return BadRequest($"It's not possible to change status of a {order.Status} order to {status}.");
         }
 
+        [HttpDelete("{id}")]
+        public IActionResult DeleteOrderById(int id)
+        {
+            var order = GetOrderBy(id);
+
+            Orders.Queue.Remove(order);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
+
         private Order GetOrderBy(int? id)
         {
             return Orders.Queue.Find(o => o.Id == id);
@@ -200,7 +214,10 @@ namespace Pizzeria_API.Controllers
                     order.Ingredients.Add(ingredient);
                 }
 
-                Orders.Queue.Add(order);
+                if(id is null)
+                {
+                    Orders.Queue.Add(order);
+                }
                 return Ok(order);
             }
         }

@@ -39,6 +39,8 @@ describe('Pizzeria tests', () => {
                 expect(response.status).to.eq(200);
                 expect(response.body.pizzas[0].name).to.eq(pizzaName);
                 orderId = response.body.id;
+                console.log(response);
+                console.log(orderId);
             })
     });
 
@@ -73,6 +75,14 @@ describe('Pizzeria tests', () => {
             .then(parseFloat)
             .should('be.eq', hamQuantityAfterOrder);
 
+    });
+
+    it('Delete test order', () => {
+      
+        cy.request('DELETE', storageUrl + `${orderId}`)
+            .then((response) => {
+                expect(response.status).to.eq(204);
+            })
     });
 
     it('Restore ingredient quantity as before executing e2e tests', () => {
