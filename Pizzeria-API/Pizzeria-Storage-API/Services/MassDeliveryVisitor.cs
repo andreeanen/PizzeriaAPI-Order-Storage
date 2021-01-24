@@ -11,7 +11,6 @@ namespace Pizzeria_Storage_API.Services
         public List<IngredientItem> IncreaseQuantityOfIngredients(List<IngredientItem> ingredients)
         {
             int quantityDelivered = 10;
-
             foreach (var ingredient in ingredients)
             {
                 ingredient.Quantity = GetIngredientQuantity(ingredient) + quantityDelivered;

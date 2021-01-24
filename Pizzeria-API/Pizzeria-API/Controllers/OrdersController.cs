@@ -63,7 +63,6 @@ namespace Pizzeria_API.Controllers
         public IActionResult CreateOrder(string productName)
         {
             return CreateOrUpdateOrder(productName);
-
         }
 
         [HttpPut("{id}/{action}={productName}")]
@@ -153,6 +152,7 @@ namespace Pizzeria_API.Controllers
                     return BadRequest($"Invalid status parameter: {status}");
                 }
             }
+
             return BadRequest($"It's not possible to change status of a {order.Status} order to {status}.");
         }
 

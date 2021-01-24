@@ -1,5 +1,8 @@
 ﻿
+
 function getIngredients() {
+    const loader = document.getElementById('loader');
+    loader.style.display = 'none';
     const endpoint = 'http://localhost:6002/api/ingredientitems/';
     fetch(endpoint)
         .then(function (response) {
@@ -15,6 +18,7 @@ function getIngredients() {
             displayIngredients(data);
         })
         .catch(function (error) {
+            waitForData();
             console.error('Failed to receive ingredients from storage.', error);
         })
 }
@@ -56,6 +60,14 @@ function displayIngredients(data) {
     });
 }
 
+function waitForData() {
+    const loader = document.getElementById('loader');
+    loader.style.display = 'block';
+    setTimeout(function () {
+        getIngredients();
+    }, 5000);
+}
+
 function updateStorage(id,quantity) {
     let endpoint =`http://localhost:6002/api/ingredientitems/${id}/${quantity}`;
 
@@ -81,5 +93,6 @@ function massDelivery() {
         .catch(error => console.error('Failed to increase ingredients quantity.', error));
     location.reload();
 }
+
 
 getIngredients();

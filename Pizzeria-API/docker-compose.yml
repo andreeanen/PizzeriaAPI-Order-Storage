@@ -2,16 +2,7 @@ version: '3.4'
 
 services:
      
-  pizzeria-storage-frontend:
-    image: ${DOCKER_REGISTRY-}pizzeriastoragefrontend
-    ports:
-      - "80:80"
-    depends_on:
-      - pizzeria-storage-api
-    build:
-      context: .
-      dockerfile: Pizzeria-Storage-Frontend/Dockerfile
-
+  
   pizzeria-api:
     image: ${DOCKER_REGISTRY-}pizzeriaapi
     ports:
@@ -39,6 +30,18 @@ services:
     build:
       context: .
       dockerfile: Pizzeria-Storage-API/Dockerfile
+
+  pizzeria-storage-frontend:
+    image: ${DOCKER_REGISTRY-}pizzeriastoragefrontend
+    ports:
+      - "80:80"
+    depends_on:
+      - pizzeria-storage-api
+      - storagedb
+    build:
+      context: .
+      dockerfile: Pizzeria-Storage-Frontend/Dockerfile
+  
 
   
 
